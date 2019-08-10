@@ -34,14 +34,23 @@ x = np.linspace(0,L,n+1)
 #Condicion inicial
 def fun_u0(x):
     return 10*np.exp(-(x-0.5)**2/0.1**2)
+
+def q(t):
+    return x
     
 u0 = fun_u0(x)
 
 #creando vector de solucion u en el tiempo o paso k
 u_k = u0.copy()    #Crea una nueva instancia del vector sin sobreescribirlo
 
-#Condiciones de borde
-u_k[0] = 0.
+#Condiciones de borde iniciales
+#Primeros 10 datos = 5
+for i in range(10):
+    u_k[i]=5.
+
+#Ultimos 10 datos inician en 20
+for i in range(90,n):
+    u_k[i]=20
 u_k[n] = 20.
 
 #Temperatura en el tiempo k +1 = dt * (k+1)
@@ -58,17 +67,24 @@ plot(x,u0)
 
 #Loop en el tiempo
 k = 0
-for k in range(5000):
+for k in range(7000):
     t = dt*k
     print "k = ", k, " t = ", t 
     
-    u_k[0] = 0.
-    u_k[n] = 20.
-    #Loop en el espacio i=1 ... n-1  u_km1[0] = 0  u_km1[n] = 20
+    #Loop en el espacio i=1 ... n  u_km1[0] = 0  u_km1[n] = 20
     for i in range(1,n):
-        #Algoritmo de diferencias finitas 1D paradifusion
+
+        #Algoritmo de diferencias finitas 1D para difusion
+        Q = q(x)
         u_km1[i] = u_k[i] + alpha*(u_k[i+1] - 2*u_k[i] + u_k[i-1])
-    #Avanzar la solucion a k +1
+        
+    #Actualizamos los puntos de los bordes igualando pendientes con puntos vecinos
+    #Borde inicial
+    u_k[0] = u_km1[1] - dx*(u_km1[2]- u_km1[1])
+    #Borde final
+    u_k[n] = u_km1[n-1] + dx*(u_km1[n-1] -u_km1[n-2])
+        
+    #Avanzar la solucion a k+1
     u_k =  u_km1
     if k % 200 == 0:
         plot(x,u_k)
