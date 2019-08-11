@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 06 16:28:17 2019
-
-@author: Pedro
-"""
-
 import scipy as sp
 import numpy as np
 import random
