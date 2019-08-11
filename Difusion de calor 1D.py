@@ -68,7 +68,6 @@ for a in alpha:
     for i in range(90,n+1 ):
         u_k1[i]=20.
     #2.- Segundo caso de estudio:
-
     u_k2[0]=5
     u_k2[n]=20
     #3.- Tercer caso de estudio:
@@ -77,7 +76,7 @@ for a in alpha:
     #4.- Cuarto caso de estudio:
     u_k4[0] =0 
     u_k4[n] =20
-
+    #Creamos una copia con el objetivo de no modificar las condiciones de bordes 
     u_km1 =u_k1.copy()
     u_km2 =u_k2.copy()
     u_km3 =u_k3.copy()
@@ -96,7 +95,7 @@ for a in alpha:
             #Algoritmo de condición de borde inferior igual a 5
             u_km2[i] = u_k2[i] + a*(u_k2[i+1] - 2*u_k2[i] + u_k2[i-1])
             #Algoritmo de perdida de calor en cierto tiempo en un punto en especifico
-            u_km3[i] = (u_k3[i] + a*(u_k3[i+1] - 2*u_k3[i] + u_k3[i-1]) - q(k,i,r))
+            u_km3[i] = (u_k3[i] + a*(u_k3[i+1] - 2*u_k3[i] + u_k3[i-1]) + q(k,i,r))
             #Algoritmo de condición de borde inferior igualada a los puntos vecinos
             u_km4[i] = u_k4[i] + a*(u_k4[i+1] - 2*u_k4[i] + u_k4[i-1])
         #Primer estudio    
@@ -127,13 +126,13 @@ for a in alpha:
             subplot (1,4,2)
             plot(x,u_k2)
             if contador==1:
-                title("------------------Analisis para el Hierro k = {}   t = {} s------------------".format(k,k*dt))
+                title("------------------Analisis para el Hierro k = {}   t = {} ------------------\n".format(k,k*dt))
             elif contador==2:
-                title("------------------Analisis para el Cobre k = {}   t = {} s------------------".format(k,k*dt))
+                title("------------------Analisis para el Cobre k = {}   t = {} ------------------\n".format(k,k*dt))
             elif contador==3:
-                title("------------------Analisis para el Acero k = {}   t = {} s------------------".format(k,k*dt))
+                title("------------------Analisis para el Acero k = {}   t = {} ------------------\n".format(k,k*dt))
             else:
-                title("------------------Analisis para el Ladrillo Refractario k = {}   t = {} s------------------".format(k,k*dt)) 
+                title("------------------Analisis para el Ladrillo Refractario k = {}   t = {} ------------------\n".format(k,k*dt)) 
             subplot (1,4,3)
             plot(x,u_k3)
 
