@@ -149,3 +149,4 @@ for a in alpha:
 
     show()
     contador +=1
+    
