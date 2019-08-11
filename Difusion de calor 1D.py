@@ -84,7 +84,6 @@ for a in alpha:
 
     for k in range(30000):
         t = dt*k
-        print "k = ", k, " t = ", t 
         r=random.randint(1,100)
         #Loop en el espacio i=1 ... n  u_km1[0] = 0  u_km1[n] = 20
         for i in range(1,n):
