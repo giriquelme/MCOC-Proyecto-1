@@ -125,13 +125,13 @@ for a in alpha:
             subplot (1,4,2)
             plot(x,u_k2)
             if contador==1:
-                title("------------------Analisis para el Hierro k = {}   t = {} \n".format(k,k*dt))
+                title("                  Analisis para el Hierro k = {}   t = {} \n".format(k,k*dt))
             elif contador==2:
-                title("------------------Analisis para el Estano k = {}   t = {} \n".format(k,k*dt))
+                title("                  Analisis para el Estano k = {}   t = {} \n".format(k,k*dt))
             elif contador==3:
-                title("------------------Analisis para el Acero k = {}   t = {} \n".format(k,k*dt))
+                title("                  Analisis para el Acero k = {}   t = {} \n".format(k,k*dt))
             else:
-                title("------------------Analisis para el Ladrillo Refractario k = {}   t = {} \n".format(k,k*dt)) 
+                title("                  Analisis para el Ladrillo Refractario k = {}   t = {} \n".format(k,k*dt)) 
             subplot (1,4,3)
             plot(x,u_k3)
 
