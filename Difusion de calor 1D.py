@@ -43,7 +43,7 @@ u0 = fun_u0(x)
 dt = 1
 alpha = []
 
-#Arreglo matricial de la conductividad termica, calor especifico y la densidad de masa de diferentes materiales, especificamente del hierro, estano, acero, ladrillo refractario
+#Arreglo matricial de la conductividad termica, calor especifico y la densidad de masa de diferentes materiales, especificamente del hierro, estano, acero, ladrillo refractario,Madera
 #parametros=[k,c,rho]
 parametros=[[79.5,450.,7800.],[64.,210.,7310.],[54.,120.,7850.],[0.8,210.,2000.],[0.13,1700.,450.]] 
 
