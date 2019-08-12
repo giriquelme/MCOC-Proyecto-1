@@ -45,7 +45,7 @@ alpha = []
 
 #Arreglo matricial de la conductividad termica, calor especifico y la densidad de masa de diferentes materiales, especificamente del hierro, estano, acero, ladrillo refractario
 #parametros=[k,c,rho]
-parametros=[[79.5,450.,7800.],[64.,210.,7310.],[54.,120.,7850.],[0.8,210.,2000.]] 
+parametros=[[79.5,450.,7800.],[64.,210.,7310.],[54.,120.,7850.],[0.8,210.,2000.],[0.13,1700.,450.]] 
 
 #ciclo for para calcular el alpha de cada material
 for i in range(len(parametros)):
@@ -124,14 +124,16 @@ for a in alpha:
             plot(x,u_k1)
             subplot (1,4,2)
             plot(x,u_k2)
-            if contador==1:
+           if contador==1:
                 title("                  Analisis para el Hierro k = {}   t = {} \n".format(k,k*dt))
             elif contador==2:
                 title("                  Analisis para el Estano k = {}   t = {} \n".format(k,k*dt))
             elif contador==3:
                 title("                  Analisis para el Acero k = {}   t = {} \n".format(k,k*dt))
+            elif contador==4:
+                title("                  Analisis para el Ladrillo Refractario k = {}   t = {} \n".format(k,k*dt))
             else:
-                title("                  Analisis para el Ladrillo Refractario k = {}   t = {} \n".format(k,k*dt)) 
+                titlle("                 Analisis para Madera k={}  t{}    \n".format(k,k*dt))
             subplot (1,4,3)
             plot(x,u_k3)
 
