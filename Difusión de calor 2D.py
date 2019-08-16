@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 13 16:09:50 2019
-
-@author: nico7
-"""
 
 import scipy as sp
 from matplotlib.pyplot import*
