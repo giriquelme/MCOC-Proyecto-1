@@ -73,60 +73,70 @@ show()
 
 #parametros del problema
 dt=1    #s
-K=79.5  #m^2/s
-c=450.  #J/KgC
-rho=7800.   #Kg/m^3
+K=[] #m^2/s
+c=[]  #J/KgC
+rho=[] #Kg/m^3
+alpha=[] 
 
-alpha=K*dt/(c*rho*dx**2)
-print "dt=",dt
-print "dx=",dx
-print"K=",K
-print "c=",c
-print "rho=",rho 
-print "alpha=", alpha
+parametros=[[79.5,450.,7800.],[64.,210.,7310.],[54.,120.,7850.],[0.8,210.,2000.],[0.13,1700.,450.]] 
 
 
-
-k=0
-figure(1)
-imshowbien(u_k)
-title("k= {}  t= {} s".format(k,k*dt))
-
-#savefig("movie/frame_ {0:04.0f}.png".format(k))
-close(1)
-
-for k in range (1,100):
-    t=dt*(k+1)
+#ciclo for para calcular el alpha de cada material
+for i in range(len(parametros)):
+    alpha.append(parametros[i][0]*dt/(parametros[i][1]*parametros[i][2]*dx**2))
+    K.append(parametros[i][0])
+    c.append(parametros[i][1])
+    rho.append(parametros[i][2])
     
-    #loop en el espacio i=1....n   u_km1[0]=0 u_km1[n]=20
-    u_k[0,:] = 20
-    u_k[:,0]=20
-    
-    for i in range(1,Nx-1):
-        for j in range(1, Ny-1):
-            #algoritmo de dif finitas
-            nabla_u_k = (u_k[i-1,j]+ u_k[i+1,j]+ u_k[i, j-1] + u_k[i,j+1] - 4*u_k[i,j])/h**2
-            u_km1[i,j] = u_k[i,j] + alpha*nabla_u_k
-   
-    # avanzar la solucion a k+11
-    u_k=u_km1
-    
-    #CB natural
-    u_km1[Nx,:] = u_km1[Nx,:]   
-    u_km1[:, Ny] = u_km1[:,Ny]
-   
+contador=1
+for i in range(len(alpha)):
+    a=alpha[i]
+    print "dt=",dt
+    print "dx=",dx
+    print"K=",K[i]
+    print "c=",c[i]
+    print "rho=",rho[i]
+    print "alpha=",a
+    k=0
     figure(1)
     imshowbien(u_k)
     title("k= {}  t= {} s".format(k,k*dt))
-#    savefig("movie/frame_{0:04.0f}.png".format(k))
+
+    #savefig("movie/frame_ {0:04.0f}.png".format(k))
+    close(1)
+
+    for k in range (1,100):
+        t=dt*(k+1)
+
+        #loop en el espacio i=1....n   u_km1[0]=0 u_km1[n]=20
+        u_k[0,:] = 20
+        u_k[:,0]=20
+
+        for i in range(1,Nx-1):
+            for j in range(1, Ny-1):
+                #algoritmo de dif finitas
+                nabla_u_k = (u_k[i-1,j]+ u_k[i+1,j]+ u_k[i, j-1] + u_k[i,j+1] - 4*u_k[i,j])/h**2
+                u_km1[i,j] = u_k[i,j] + alpha*nabla_u_k
+
+        # avanzar la solucion a k+11
+        u_k=u_km1
+
+        #CB natural
+        u_km1[Nx,:] = u_km1[Nx,:]   
+        u_km1[:, Ny] = u_km1[:,Ny]
+
+        figure(1)
+        imshowbien(u_k)
+        title("k= {}  t= {} s".format(k,k*dt))
+    #    savefig("movie/frame_{0:04.0f}.png".format(k))
 
 
-#
-#figure(2)
-#imshowbien(u_k)
-#title("k= {}  t= {} s".format(k,k*dt))
-#
-show()
+    #
+    #figure(2)
+    #imshowbien(u_k)
+    #title("k= {}  t= {} s".format(k,k*dt))
+    #
+    show()
 
 
 
