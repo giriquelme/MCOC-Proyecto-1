@@ -93,7 +93,7 @@ for i in range(len(alpha)):
     print "rho=",rho[i]
     print "alpha=",a
     k=0
-    figure(1)
+    figure(contador)
     imshowbien(u_k)
     title("k= {}  t= {} s".format(k,k*dt))
 
@@ -120,7 +120,7 @@ for i in range(len(alpha)):
         u_km1[Nx,:] = u_km1[Nx,:]   
         u_km1[:, Ny] = u_km1[:,Ny]
 
-        figure(1)
+        figure(contador)
         imshowbien(u_k)
         title("k= {}  t= {} s".format(k,k*dt))
     #    savefig("movie/frame_{0:04.0f}.png".format(k))
