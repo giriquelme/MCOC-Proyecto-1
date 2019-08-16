@@ -75,7 +75,7 @@ alpha=[]
 parametros=[[79.5,450.,7800.],[64.,210.,7310.],[54.,120.,7850.],[0.8,210.,2000.],[0.13,1700.,450.]] 
 
 
-#ciclo for para calcular el alpha de cada material
+#ciclo for para calcular el alpha de cada material y guardamos mediante listas k,c y rho respectivos
 for i in range(len(parametros)):
     alpha.append(parametros[i][0]*dt/(parametros[i][1]*parametros[i][2]*dx**2))
     K.append(parametros[i][0])
@@ -84,6 +84,7 @@ for i in range(len(parametros)):
     
 contador=1
 for i in range(len(alpha)):
+    #Primero desprendemos los valores indices de cada lista generada
     a=alpha[i]
     print "dt=",dt
     print "dx=",dx
@@ -110,7 +111,7 @@ for i in range(len(alpha)):
             for j in range(1, Ny-1):
                 #algoritmo de dif finitas
                 nabla_u_k = (u_k[i-1,j]+ u_k[i+1,j]+ u_k[i, j-1] + u_k[i,j+1] - 4*u_k[i,j])/h**2
-                u_km1[i,j] = u_k[i,j] + alpha*nabla_u_k
+                u_km1[i,j] = u_k[i,j] + a*nabla_u_k
 
         # avanzar la solucion a k+11
         u_k=u_km1
