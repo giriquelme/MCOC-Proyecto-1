@@ -83,7 +83,7 @@ for i in range(len(parametros)):
     c.append(parametros[i][1])
     rho.append(parametros[i][2])
 
-
+contador=1
 for l in range(len(alpha)):
     
     #Primero desprendemos los valores indices de cada lista generada
@@ -95,7 +95,7 @@ for l in range(len(alpha)):
     print "rho=",rho[l]
     print "alpha=",a
     k=0
-    figure(1)
+    figure(contador)
     imshowbien(u_k)
     title("k= {}  t= {} s".format(k,k*dt))
 
@@ -122,7 +122,7 @@ for l in range(len(alpha)):
         u_km1[Nx,:] = u_km1[Nx,:]   
         u_km1[:, Ny] = u_km1[:,Ny]
 
-        figure(1)
+        figure(contador)
         imshowbien(u_k)
         title("k= {}  t= {} s".format(k,k*dt))
         #Guardamos cada imagen por tipo de material, en la misma carpeta donde colocamos el archivo (.py)
@@ -145,7 +145,7 @@ for l in range(len(alpha)):
     #
     show()
     print "__________________________________"
-
+    contador+=1
 
 
 
