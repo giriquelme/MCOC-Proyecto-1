@@ -71,7 +71,8 @@ K=[] #m^2/s
 c=[]  #J/KgC
 rho=[] #Kg/m^3
 alpha=[] 
-
+#Arreglo matricial de la conductividad termica, calor especifico y la densidad de masa de diferentes materiales, especificamente del hierro, estano, acero, ladrillo refractario, madera
+#parametros=[k,c,rho]
 parametros=[[79.5,450.,7800.],[64.,210.,7310.],[54.,120.,7850.],[0.8,210.,2000.],[0.13,1700.,450.]] 
 
 
@@ -81,9 +82,10 @@ for i in range(len(parametros)):
     K.append(parametros[i][0])
     c.append(parametros[i][1])
     rho.append(parametros[i][2])
-    
-contador=1
+
+
 for i in range(len(alpha)):
+    
     #Primero desprendemos los valores indices de cada lista generada
     a=alpha[i]
     print "dt=",dt
@@ -93,7 +95,7 @@ for i in range(len(alpha)):
     print "rho=",rho[i]
     print "alpha=",a
     k=0
-    figure(contador)
+    figure(1)
     imshowbien(u_k)
     title("k= {}  t= {} s".format(k,k*dt))
 
@@ -120,10 +122,20 @@ for i in range(len(alpha)):
         u_km1[Nx,:] = u_km1[Nx,:]   
         u_km1[:, Ny] = u_km1[:,Ny]
 
-        figure(contador)
+        figure(1)
         imshowbien(u_k)
         title("k= {}  t= {} s".format(k,k*dt))
-    #    savefig("movie/frame_{0:04.0f}.png".format(k))
+        #Guardamos cada imagen por tipo de material, en la misma carpeta donde colocamos el archivo (.py)
+        if i==0:
+            savefig('Hierro{0}.png'.format(k))
+        elif i==1:
+            savefig('Estano{0}.png'.format(k))
+        elif i==2:
+            savefig('Acero{0}.png'.format(k))
+        elif i==3:
+            savefig('Ladrillo{0}.png'.format(k))
+        else:
+            savefig('Madera{0}.png'.format(k))   
 
 
     #
@@ -132,6 +144,8 @@ for i in range(len(alpha)):
     #title("k= {}  t= {} s".format(k,k*dt))
     #
     show()
+    print "__________________________________"
+
 
 
 
