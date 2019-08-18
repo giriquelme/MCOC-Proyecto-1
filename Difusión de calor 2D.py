@@ -84,15 +84,15 @@ for i in range(len(parametros)):
     rho.append(parametros[i][2])
 
 
-for i in range(len(alpha)):
+for l in range(len(alpha)):
     
     #Primero desprendemos los valores indices de cada lista generada
-    a=alpha[i]
+    a=alpha[l]
     print "dt=",dt
     print "dx=",dx
-    print"K=",K[i]
-    print "c=",c[i]
-    print "rho=",rho[i]
+    print"K=",K[l]
+    print "c=",c[l]
+    print "rho=",rho[l]
     print "alpha=",a
     k=0
     figure(1)
@@ -126,15 +126,15 @@ for i in range(len(alpha)):
         imshowbien(u_k)
         title("k= {}  t= {} s".format(k,k*dt))
         #Guardamos cada imagen por tipo de material, en la misma carpeta donde colocamos el archivo (.py)
-        if i==0:
+        if l==0:
             savefig('Hierro{0}.png'.format(k))
-        elif i==1:
+        elif l==1:
             savefig('Estano{0}.png'.format(k))
-        elif i==2:
+        elif l==2:
             savefig('Acero{0}.png'.format(k))
-        elif i==3:
+        elif l==3:
             savefig('Ladrillo{0}.png'.format(k))
-        else:
+        elif l==4:
             savefig('Madera{0}.png'.format(k))   
 
 
