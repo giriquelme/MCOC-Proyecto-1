@@ -85,7 +85,9 @@ for i in range(len(parametros)):
 
 contador=1
 for l in range(len(alpha)):
-    
+    #creamos las matrices otra vez, para asi poder trabajar desde 0 con cada material 
+    u_k = np.zeros((Nx+1, Ny+1), dtype = np.double) # dtype es para el tipo de datos(int, float, float32, float64, double, etc)
+    u_km1 = np.zeros((Nx+1, Ny+1), dtype = np.double)
     #Primero desprendemos los valores indices de cada lista generada
     a=alpha[l]
     print "dt=",dt
@@ -122,20 +124,33 @@ for l in range(len(alpha)):
         u_km1[Nx,:] = u_km1[Nx,:]   
         u_km1[:, Ny] = u_km1[:,Ny]
 
-        figure(contador)
-        imshowbien(u_k)
-        title("k= {}  t= {} s".format(k,k*dt))
         #Guardamos cada imagen por tipo de material, en la misma carpeta donde colocamos el archivo (.py)
+        
         if l==0:
+            figure(contador)
+            imshowbien(u_k)
+            title(" Hierro k = {}   t = {}     \n".format(k,k*dt))
             savefig('Hierro{0}.png'.format(k))
         elif l==1:
+            figure(contador)
+            imshowbien(u_k)
+            title(" Estano k = {}   t = {}     \n".format(k,k*dt))
             savefig('Estano{0}.png'.format(k))
         elif l==2:
+            figure(contador)
+            imshowbien(u_k)
+            title(" Acero k = {}   t = {}     \n".format(k,k*dt))
             savefig('Acero{0}.png'.format(k))
         elif l==3:
+            figure(contador)
+            imshowbien(u_k)
+            title(" Ladrillo k = {}   t = {}     \n".format(k,k*dt))
             savefig('Ladrillo{0}.png'.format(k))
         elif l==4:
+            title(" Madera k = {}   t = {}     \n".format(k,k*dt))
             savefig('Madera{0}.png'.format(k))   
+
+
 
 
     #
