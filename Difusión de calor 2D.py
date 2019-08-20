@@ -49,7 +49,7 @@ printbien(u_k)
 def imshowbien(u):
     imshow(u.T[Nx::-1,:])
     colorbar(extend='both',cmap='plasma')
-    clim(0, 20)
+    clim(10, 30)
  
 #Parametros del problema (hierro)
 dt = 1.0       # s
@@ -88,21 +88,23 @@ dnext_t = 0.05   #  20.00
 next_t = 0.
 framenum = 0
 
-T=24*36000
+T=5
 def u_ambiente(t,T):
-    return 50 + 10*np.sin((2*np.pi/T)*t)
+    return  20. + 10*np.sin((2*np.pi/T)*t)
+
+u_k[:,:] = 20.
 
 for k in range(int32(5./dt)):
     t = dt*(k+1)
     print "k = ", k, " t = ", t
     
-    #u_ambiente=20+10*sin((2*pi/T)*t)
+    u_ambiente=20+10*np.sin((2*np.pi/T)*t)
     
     #CB esencial
     u_k[0,:] = 20.
     u_k[:,0] = 20. 
     u_k[Nx,:] = 20.
-    u_k[:,Ny] = u_ambiente(k,T)
+    u_k[:,Ny] = 20+10*np.sin((2*np.pi/T)*t)
  
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
     for i in range(1,Nx):
@@ -126,7 +128,7 @@ for k in range(int32(5./dt)):
     u_k[0,:] = 20.
     u_k[:,0] = 20.
     u_k[Nx,:] = 20.
-    u_k[:,Ny] = u_ambiente(k,T)
+    u_k[:,Ny] = 20+10*np.sin((2*np.pi/T)*t)
     #agregar otros bored
  
     print "Tmax = ", u_k.max()
