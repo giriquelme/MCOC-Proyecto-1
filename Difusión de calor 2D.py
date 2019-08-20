@@ -1,7 +1,7 @@
-
 from matplotlib.pylab import *
+import numpy as np 
  
- 
+
 a = 1.          #Ancho del dominio
 b = 1.          #Largo del dominio
 Nx = 30         #Numero de intervalos en x
@@ -87,14 +87,22 @@ k = 0
 dnext_t = 0.05   #  20.00
 next_t = 0.
 framenum = 0
-#T=24*36000
+
+T=24*36000
+def u_ambiente(t,T):
+    return 50 + 10*np.sin((2*np.pi/T)*t)
+
 for k in range(int32(5./dt)):
     t = dt*(k+1)
     print "k = ", k, " t = ", t
+    
     #u_ambiente=20+10*sin((2*pi/T)*t)
+    
     #CB esencial
     u_k[0,:] = 20.
-    u_k[:,0] = 20.
+    u_k[:,0] = 20. 
+    u_k[Nx,:] = 20.
+    u_k[:,Ny] = u_ambiente(k,T)
  
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
     for i in range(1,Nx):
@@ -117,6 +125,8 @@ for k in range(int32(5./dt)):
     #CB esencial una ultima vez
     u_k[0,:] = 20.
     u_k[:,0] = 20.
+    u_k[Nx,:] = 20.
+    u_k[:,Ny] = u_ambiente(k,T)
     #agregar otros bored
  
     print "Tmax = ", u_k.max()
@@ -136,3 +146,4 @@ for k in range(int32(5./dt)):
  
  
 show()
+
