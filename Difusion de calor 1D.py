@@ -27,11 +27,11 @@ x = np.linspace(0,L,n+1)
 
 #Condicion inicial
 def fun_u0(x):
-    return 10*np.exp(-(x-0.5)**2/0.1**2)
+    return x*0
 
 def q(t,x,r):
-    if t%300==0 and r==x:
-        return 0.35
+    if t < 5 and x >20 and x<50:
+        return 1.
     else:
         return 0.
 
@@ -72,7 +72,7 @@ for a in alpha:
     u_k2[n]=20
     #3.- Tercer caso de estudio:
     u_k3[0] =0
-    u_k3[n] =20
+    u_k3[n] =0
     #4.- Cuarto caso de estudio:
     u_k4[0] =0 
     u_k4[n] =20
@@ -124,7 +124,7 @@ for a in alpha:
             plot(x,u_k1)
             subplot (1,4,2)
             plot(x,u_k2)
-           if contador==1:
+            if contador==1:
                 title("                  Analisis para el Hierro k = {}   t = {} \n".format(k,k*dt))
             elif contador==2:
                 title("                  Analisis para el Estano k = {}   t = {} \n".format(k,k*dt))

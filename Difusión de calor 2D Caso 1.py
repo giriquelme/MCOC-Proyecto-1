@@ -1,4 +1,3 @@
-
 from matplotlib.pylab import *
 import numpy as np 
  
@@ -32,7 +31,8 @@ x, y = coords(4,2)
  
 print "x = ", x
 print "y = ", y
- 
+
+#Matricez con datos iniciales y datos en el momento k+1
 u_k = zeros((Nx+1,Ny+1), dtype=double)   #dtype es el tipo de datos (double, float, int32, int16...)
 u_km1 = zeros((Nx+1,Ny+1), dtype=double)   #dtype es el tipo de datos (double, float, int32, int16...)
  
@@ -47,7 +47,7 @@ def printbien(u):
  
 print u_k               #Imprime con el eje y invertido
 printbien(u_k)
-
+ 
 #Funcion que grafica la matriz de mamera correcta
 def imshowbien(u):
     imshow(u.T[Nx::-1,:])
@@ -64,7 +64,7 @@ alpha = K*dt/(c*rho*dx**2)
 # dx =  0.166666666667
 # dt = 1.0
 # alpha =  0.000815384615385
- 
+
 alpha_bueno = 0.0001
 dt = alpha_bueno*(c*rho*dx**2)/K
 alpha = K*dt/(c*rho*dx**2)
@@ -99,11 +99,14 @@ dnext_t = 0.05   #  20.00
 next_t = 0.
 framenum = 0
 
-for k in range(int32(10./dt)):
+for k in range(int32(5./dt)):
     t = dt*(k+1)
     print "k = ", k, " t = ", t
     
     #CB esencial
+    u_k[0,:] = 20.
+    u_k[:,0] = 20. 
+    u_k[Nx,:] = 20.
     u_k[:,Ny] = 20+10*np.sin((2*np.pi/T)*t)
  
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
@@ -125,9 +128,9 @@ for k in range(int32(10./dt)):
     u_k = u_km1
  
     #CB esencial una ultima vez
-    u_k[0,:] = u_k[1,:]
-    u_k[Nx,:] = u_k[Nx-1,:]
-    u_k[:,0] = u_k[:,1] 
+    u_k[0,:] = 20.
+    u_k[:,0] = 20.
+    u_k[Nx,:] = 20.
     u_k[:,Ny] = 20+10*np.sin((2*np.pi/T)*t)
     #agregar otros bored
  
@@ -148,3 +151,4 @@ for k in range(int32(10./dt)):
  
  
 show()
+
