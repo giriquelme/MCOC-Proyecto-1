@@ -47,7 +47,13 @@ u_km1 = zeros((Nx+1,Ny+1,Nz+1), dtype=double)   #dtype es el tipo de datos (doub
  
 #CB esencial
 u_k[0,:,:] = 20.
+u_k[-1,:,:] = 20.
 u_k[:,0,:] = 20.
+u_k[:,-1,:] = 20.
+u_k[:,:,0] = 20.
+
+#Condicion inicial
+u_k[:,:,:] = 20.
  
 #Buena idea definir funciones que hagan el codigo expresivo
 def printbien(u):
@@ -55,6 +61,7 @@ def printbien(u):
  
 print u_k               #Imprime con el eje y invertido
 printbien(u_k)
+
  
 def imshowbien(u):
     imshow(u.T[Nx::-1,:,:])
@@ -110,12 +117,7 @@ for k in range(int32(5./dt)):
     u_ambiente=20+10*np.sin((2*np.pi/T)*t)
     
     #CB esencial
-    u_k[0,:,:] = 0
-    u_k[:,0,:] = 0
-    u_k[:,:,0] = 0
-    u_k[ Nx,:,:] = 0
-    u_k[:, Ny,:] = 20+10*np.sin((2*np.pi/T)*t)
-    u_k[:,:, Nz] = 0
+    u_k[:,:, Nz] = 20+10*np.sin((2*np.pi/T)*t)
     fii = fi(K,alpha,t)
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
     for i in range(1,Nx):
@@ -133,17 +135,14 @@ for k in range(int32(5./dt)):
 
 
     #CB natural
-    u_km1[Nx,:,:] = u_km1[Nx-1,:,:]
-    u_km1[:,Ny,:] = u_km1[:,Ny-1,:]
-    u_km1[:,:,Nz] = u_km1[:,:,Nz-1]
+    u_km1[0,:,:] = u_km1[1,:,:]
+    u_km1[-1,:,:] = u_km1[-1,:,:]
+    u_km1[:,0,:] = u_km1[:,1,:]
+    u_km1[:,-1,:] = u_km1[:,-2,:]
+    u_km1[:,:,0] = u_km1[:,:,1]
+    
     #Avanzar la solucion a k + 1
     u_k = u_km1
- 	u_k[0,:,:] = u_k[1,:,:]
-    u_k[Nx,:,:] = u_k[Nx-1,:,:]
-    u_k[:,0,:] = u_k[:,1,:] 
-    u_k[:,Ny,:] = 20+10*np.sin((2*np.pi/T)*t)
-    u_k[:,:,0] = u_k[:,:,1]
-	u_k[:,:,Nz] = u_k[:,:,Nz-1]
     #agregar otros bored
  
     print "Tmax = ", u_k.max()
@@ -161,7 +160,7 @@ for k in range(int32(5./dt)):
  
 # figure(2)
 # imshowbien(u_k)
-plot(grafico1,grafico2)
+plot(grafico2,grafico1)
 # title("k = {}   t = {} s".format(k, (k+1)*dt)) 
 
 show()
