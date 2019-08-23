@@ -7,8 +7,17 @@ import csv
 def fi(K,alpha,t):
     fii = K*(1-np.exp(-1*alpha*t))
     return fii
-def Q(fi,rho,c):
-    return c*rho*fi
+def Q(t):
+
+    tau = 9.8
+    b = 0.98
+    au = 0.8
+    E = 27.1
+    R = 8.31
+    tr = 20
+    tc = 27
+
+    return 38591.46031*0.400463*(tau/t)**b*(b/t)*au*np.exp(-(tau/t)**b)*np.exp(E/R*(1/(273+tr)- 1/(273+tc)))
 #Buena idea definir funciones que hagan el codigo expresivo
 def printbien(u):
     print u.T[Nx::-1,:,:]
@@ -30,7 +39,7 @@ with open('TemperaturaAmbiente.csv') as File:
             fecha = datetime( 2018 ,int32(separator1[1]),int32(separator1[0]),int32(separator2[0]),int32(separator2[1]),int32(separator2[2]))
             convercion =  fecha - tiempoInicial
             segundos = convercion.total_seconds()
-            TAmbiente.append([row[0],row[1],row[2],float(row[3]),segundos])
+            TAmbiente.append([float(row[3]),segundos])
         contador +=1
 print TAmbiente
 
@@ -38,9 +47,9 @@ sTotales=1136375
 a = 1.          #Ancho del cubo de Hormigon
 b = 0.5          #Largo del cubo de Hormigon
 c = 0.5         #Profundidad del cubo de Hormigon (redondeado por temas de no complicar mucho el codigo)
-Nx = 100         #Numero de intervalos en x
-Ny = 50        #Numero de intervalos en Y
-Nz = 50     #Numero de intervalor en Z
+Nx = 50       #Numero de intervalos en x
+Ny = 25        #Numero de intervalos en Y
+Nz = 25     #Numero de intervalor en Z
  
 dx = a / Nx     #Discretizacion espacial en X
 dy = b / Ny     #Discretizacion espacial en Y
@@ -72,7 +81,7 @@ u_k = zeros((Nx+1,Ny+1,Nz+1), dtype=double)   #dtype es el tipo de datos (double
 u_km1 = zeros((Nx+1,Ny+1,Nz+1), dtype=double)   #dtype es el tipo de datos (double, float, int32, int16...)
  
 #CB esencial
-u_k[:,:,:] = 20.
+u_k[:,:,:] = 27.
 #u_k[0,:,:] = 20.
 #u_k[-1,:,:] = 20.
 #u_k[:,0,:] = 20.
@@ -131,19 +140,19 @@ tiempo=[]
 
 
 
-for k in range(1000):
-    t = dt*(k+1)
+for k in range(len(TAmbiente)):
+    t = TAmbiente[k][1] +1
     print "k = ", k, " t = ", t
-    u_k[:,:, Nz] = TAmbiente[k][3]
+    u_k[:,:, Nz] = TAmbiente[k][0]
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
-    for i in range(1,Nx):
+    for q in range(1,Nz):
         for j in range(1,Ny):
-            for q in range(1,Nz):
+            for i in range(1,Nx):
                 #Algoritmo de diferencias finitas 3-D para difusion
                 #Laplaciano
                 nabla_u_k = (u_k[i+1,j,q] + u_k[i-1,j,q] +u_k[i,j+1,q]+u_k[i,j-1,q] + u_k[i,j,q+1] +u_k[i,j,q-1] - 6*u_k[i,j,q])/h**2  
                 #Forward euler..
-                u_km1[i,j,q] = u_k[i,j,q] + alpha*nabla_u_k
+                u_km1[i,j,q] = u_k[i,j,q] + alpha*nabla_u_k + Q(t)
     #Condiciones del caso 2
     #u_k[0,:,:] = 20.
     #u_k[-1,:,:] = 20.
@@ -166,16 +175,16 @@ for k in range(1000):
  
     if t > next_t:
         puntomedio1.append(u_k[Nx/2,Ny/2,Nz/2])
-        puntomedio2.append(u_k[Nx/2,Ny/2,4])
-        puntomedio3.append(u_k[Nx/2,Ny/2,Nz-4])
+        puntomedio2.append(u_k[Nx/2,Ny/2,2])
+        puntomedio3.append(u_k[Nx/2,Ny/2,Nz-2])
 
-        puntocero1.append(u_k[4,4,4])
-        puntocero2.append(u_k[4,4,Nz/2])
-        puntocero3.append(u_k[4,4,Nz-4])
+        puntocero1.append(u_k[2,2,2])
+        puntocero2.append(u_k[2,2,Nz/2])
+        puntocero3.append(u_k[2,2,Nz-2])
 
-        punto1.append(u_k[Nx/2,4,4])
-        punto2.append(u_k[Nx/2,4,Nz/2])
-        punto3.append(u_k[Nx/2,4,Nz-4])
+        punto1.append(u_k[Nx/2,2,2])
+        punto2.append(u_k[Nx/2,2,Nz/2])
+        punto3.append(u_k[Nx/2,2,Nz-2])
         tiempo.append(t)
         #figure(1)
         #imshowbien(u_k)
@@ -183,22 +192,19 @@ for k in range(1000):
         #savefig("movie{0}.png".format(framenum))
         #framenum += 1
         next_t += dnext_t
-        #close(1)
- 
+        #close(1) 
 # figure(2)
 # imshowbien(u_k)
-plot(puntomedio1,tiempo,'b')
-plot(puntomedio2,tiempo,'g')
-plot(puntomedio3,tiempo,'r')
-plot(puntocero1,tiempo,'c')
-plot(puntocero2,tiempo,'m')
-plot(puntocero3,tiempo,'y')
-plot(punto1,tiempo,'k')
-plot(punto2,tiempo,'gray')
-plot(punto3,tiempo,'violet')
+plot(tiempo,puntomedio1,'b')
+plot(tiempo,puntomedio2,'g')
+plot(tiempo,puntomedio3,'r')
+plot(tiempo,puntocero1,'c')
+plot(tiempo,puntocero2,'m')
+plot(tiempo,puntocero3,'y')
+plot(tiempo,punto1,'k')
+plot(tiempo,punto2,'gray')
+plot(tiempo,punto3,'violet')
 
 title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, (k+1)*dt)) 
 
-
 show()
-
