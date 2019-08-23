@@ -5,10 +5,10 @@ import csv
 
 #Lo que hacemos aqui es definir todo lo relacionado con q(t)
 def fi(K,alpha,t):
-	fii = K*(1-np.exp(-1*alpha*t))
-	return fii
+    fii = K*(1-np.exp(-1*alpha*t))
+    return fii
 def Q(fi,rho,c):
-	return c*rho*fi
+    return c*rho*fi
 #Buena idea definir funciones que hagan el codigo expresivo
 def printbien(u):
     print u.T[Nx::-1,:,:]
@@ -37,14 +37,14 @@ print TAmbiente
 sTotales=1136375
 a = 1.          #Ancho del cubo de Hormigon
 b = 0.5          #Largo del cubo de Hormigon
-c = 0.5			#Profundidad del cubo de Hormigon (redondeado por temas de no complicar mucho el codigo)
+c = 0.5         #Profundidad del cubo de Hormigon (redondeado por temas de no complicar mucho el codigo)
 Nx = 100         #Numero de intervalos en x
 Ny = 50        #Numero de intervalos en Y
-Nz = 50		#Numero de intervalor en Z
+Nz = 50     #Numero de intervalor en Z
  
 dx = a / Nx     #Discretizacion espacial en X
 dy = b / Ny     #Discretizacion espacial en Y
-dz = c / Nz		#Discretizacion espacial en Z
+dz = c / Nz     #Discretizacion espacial en Z
  
 h = dx    # = dy = dz 
  
@@ -72,11 +72,12 @@ u_k = zeros((Nx+1,Ny+1,Nz+1), dtype=double)   #dtype es el tipo de datos (double
 u_km1 = zeros((Nx+1,Ny+1,Nz+1), dtype=double)   #dtype es el tipo de datos (double, float, int32, int16...)
  
 #CB esencial
-u_k[0,:,:] = 20.
-u_k[-1,:,:] = 20.
-u_k[:,0,:] = 20.
-u_k[:,-1,:] = 20.
-u_k[:,:,0] = 20.
+u_k[:,:,:] = 20.
+#u_k[0,:,:] = 20.
+#u_k[-1,:,:] = 20.
+#u_k[:,0,:] = 20.
+#u_k[:,-1,:] = 20.
+#u_k[:,:,0] = 20.
 
 #Condicion inicial
 
@@ -85,14 +86,14 @@ dt = 1.0       # s
 K = 79.5       # m^2 / s   
 c = 450.       # J / kg C
 rho = 7800.    # kg / m^3
-alpha = K*dt/(c*rho*dx**2)
+alpha = K*dt/(c*rho*dx)
 
 # dx =  0.166666666667
 # dt = 1.0
 # alpha =  0.000815384615385
  
 alpha_bueno = 0.0001
-dt = alpha_bueno*(c*rho*dx**2)/K
+#dt = alpha_bueno*(c*rho*dx**2)/K
 alpha = K*dt/(c*rho)
  
  
@@ -113,11 +114,21 @@ k = 0
 # close(1)
  
 #Loop en el tiempo 
-dnext_t = 0.05   #  20.00
+dnext_t = 500   #  20.00
 next_t = 0.
 framenum = 0
 
-T=5
+puntomedio1=[]
+puntomedio2=[]
+puntomedio3=[]
+puntocero1=[]
+puntocero2=[]
+puntocero3=[]
+punto1=[]       
+punto2=[]
+punto3=[]
+
+
 
 for k in range(segundos/dt):
     t = dt*(k+1)
@@ -126,18 +137,18 @@ for k in range(segundos/dt):
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
     for i in range(1,Nx):
         for j in range(1,Ny):
-        	for q in range(1,Nz):
-	            #Algoritmo de diferencias finitas 3-D para difusion
-	            #Laplaciano
-	            nabla_u_k = (u_k[i+1,j,q] + u_k[i-1,j,q] +u_k[i,j+1,q]+u_k[i,j-1,q] + u_k[i,j,q+1] +u_k[i,j,q-1] - 6*u_k[i,j,q])/h**2  
-	            #Forward euler..
-	            u_km1[i,j,q] = u_k[i,j,q] + alpha*nabla_u_k
- 	#Condiciones del caso 2
-    u_k[0,:,:] = 20.
-    u_k[-1,:,:] = 20.
-    u_k[:,0,:] = 20.
-    u_k[:,-1,:] = 20.
-    u_k[:,:,0] = 20.
+            for q in range(1,Nz):
+                #Algoritmo de diferencias finitas 3-D para difusion
+                #Laplaciano
+                nabla_u_k = (u_k[i+1,j,q] + u_k[i-1,j,q] +u_k[i,j+1,q]+u_k[i,j-1,q] + u_k[i,j,q+1] +u_k[i,j,q-1] - 6*u_k[i,j,q])/h**2  
+                #Forward euler..
+                u_km1[i,j,q] = u_k[i,j,q] + alpha*nabla_u_k
+    #Condiciones del caso 2
+    #u_k[0,:,:] = 20.
+    #u_k[-1,:,:] = 20.
+    #u_k[:,0,:] = 20.
+    #u_k[:,-1,:] = 20.
+    #u_k[:,:,0] = 20.
 
     #CB natural
     u_km1[0,:,:] = u_km1[1,:,:]
@@ -153,9 +164,9 @@ for k in range(segundos/dt):
     print "Tmax = ", u_k.max()
  
     if t > next_t:
-    	puntomedio1.append(u_k[Nx/2,Ny/2,Nz/2])
+        puntomedio1.append(u_k[Nx/2,Ny/2,Nz/2])
         puntomedio2.append(u_k[Nx/2,Ny/2,4])
-        puntomedio2.append(u_k[Nx/2,Ny/2,Nz-4)
+        puntomedio3.append(u_k[Nx/2,Ny/2,Nz-4)
 
         puntocero1.append(u_k[4,4,4])
         puntocero2.append(u_k[4,4,Nz/2])
@@ -165,13 +176,13 @@ for k in range(segundos/dt):
         punto2.append(u_k[Nx/2,4,Nz/2])
         punto3.append(u_k[Nx/2,4,Nz-4])
 
-    	tiempo.append(t)
+        tiempo.append(t)
         #figure(1)
         #imshowbien(u_k)
         #title("k = {0:4.0f}   t = {1:05.2f} s".format(k, k*dt))
         #savefig("movie{0}.png".format(framenum))
         #framenum += 1
-        #next_t += dnext_t
+        next_t += dnext_t
         #close(1)
  
 # figure(2)
