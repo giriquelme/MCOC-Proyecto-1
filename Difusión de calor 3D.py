@@ -1,43 +1,69 @@
 from matplotlib.pylab import *
+from datetime import datetime, timedelta
 import numpy as np 
- 
+import csv
+
+#Lo que hacemos aqui es definir todo lo relacionado con q(t)
 def fi(K,alpha,t):
 	fii = K*(1-np.exp(-1*alpha*t))
 	return fii
 def Q(fi,rho,c):
 	return c*rho*fi
-
-a = 1.          #Ancho del dominio
-b = 1.          #Largo del dominio
-c = 1.			#Profundidad del dominio
-Nx = 30         #Numero de intervalos en x
-Ny = 30         #Numero de intervalos en Y
-Nz = 30			#Numero de intervalor en Z
+#Buena idea definir funciones que hagan el codigo expresivo
+def printbien(u):
+    print u.T[Nx::-1,:,:]
  
-dx = b / Nx     #Discretizacion espacial en X
-dy = a / Ny     #Discretizacion espacial en Y
+def imshowbien(u):
+    imshow(u.T[Nx::-1,:,:])
+    colorbar(extend='both',cmap='plasma')
+    clim(10, 30)
+
+TAmbiente=[]
+with open('TemperaturaAmbiente.csv') as File:
+    reader = csv.reader(File)
+    tiempoInicial= datetime(2018,11,27,10,13,8)
+    contador = 0
+    for row in reader:
+        if contador != 0:
+            separator1 = row[0].split("/")
+            separator2 = row[1].split(":")
+            fecha = datetime( 2018 ,int32(separator1[1]),int32(separator1[0]),int32(separator2[0]),int32(separator2[1]),int32(separator2[2]))
+            convercion =  fecha - tiempoInicial
+            segundos = convercion.total_seconds()
+            TAmbiente.append([row[0],row[1],row[2],float(row[3]),segundos])
+        contador +=1
+print TAmbiente
+
+sTotales=1136375
+a = 1.          #Ancho del cubo de Hormigon
+b = 0.5          #Largo del cubo de Hormigon
+c = 0.5			#Profundidad del cubo de Hormigon (redondeado por temas de no complicar mucho el codigo)
+Nx = 100         #Numero de intervalos en x
+Ny = 50        #Numero de intervalos en Y
+Nz = 50		#Numero de intervalor en Z
+ 
+dx = a / Nx     #Discretizacion espacial en X
+dy = b / Ny     #Discretizacion espacial en Y
 dz = c / Nz		#Discretizacion espacial en Z
  
 h = dx    # = dy = dz 
  
-grafico1=[]
-grafico2=[]
 if dx != dy or dx != dz or dz != dy :
     print("ERRROR!!!!! dx != dy  or dx != dz or dz != dy")
     exit(-1)   #-1 le dice al SO que el programa fallo.....
- 
+
 #Funcion de conveniencia para calcular coordenadas del punto (i,j)
- 
+
 # def coords(i,j):
 #   return dx*i, dy*j
 # x, y = coords(4,2)  
  
 # i, j = 4, 2 
 # x, y = dx*i, dy*j
- 
+
 coords = lambda i, j, q : (dx*i, dy*j, dz*q)
 x, y, z = coords(4,2,6) 
- 
+
 print "x = ", x
 print "y = ", y
 print "z = ", z
@@ -53,28 +79,14 @@ u_k[:,-1,:] = 20.
 u_k[:,:,0] = 20.
 
 #Condicion inicial
-u_k[:,:,:] = 20.
- 
-#Buena idea definir funciones que hagan el codigo expresivo
-def printbien(u):
-    print u.T[Nx::-1,:,:]
- 
-print u_k               #Imprime con el eje y invertido
-printbien(u_k)
 
- 
-def imshowbien(u):
-    imshow(u.T[Nx::-1,:,:])
-    colorbar(extend='both',cmap='plasma')
-    clim(10, 30)
- 
 #Parametros del problema (hierro)
 dt = 1.0       # s
 K = 79.5       # m^2 / s   
 c = 450.       # J / kg C
 rho = 7800.    # kg / m^3
 alpha = K*dt/(c*rho*dx**2)
- 
+
 # dx =  0.166666666667
 # dt = 1.0
 # alpha =  0.000815384615385
@@ -107,32 +119,25 @@ framenum = 0
 
 T=5
 
-def u_ambiente(t,T):
-    return  20. + 10*np.sin((2*np.pi/T)*t)
-
-for k in range(int32(5./dt)):
+for k in range(segundos/dt):
     t = dt*(k+1)
     print "k = ", k, " t = ", t
-    
-    u_ambiente=20+10*np.sin((2*np.pi/T)*t)
-    
-    #CB esencial
-    u_k[:,:, Nz] = 20+10*np.sin((2*np.pi/T)*t)
-    fii = fi(K,alpha,t)
+    u_k[:,:, Nz] = TAmbiente[k][3]
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
     for i in range(1,Nx):
         for j in range(1,Ny):
         	for q in range(1,Nz):
-	            #Algoritmo de diferencias finitas 2-D para difusion
-	 
+	            #Algoritmo de diferencias finitas 3-D para difusion
 	            #Laplaciano
 	            nabla_u_k = (u_k[i+1,j,q] + u_k[i-1,j,q] +u_k[i,j+1,q]+u_k[i,j-1,q] + u_k[i,j,q+1] +u_k[i,j,q-1] - 6*u_k[i,j,q])/h**2  
-	 
 	            #Forward euler..
-	            u_km1[i,j,q] = u_k[i,j,q] + alpha*nabla_u_k + Q(fii,rho,c)
- 
+	            u_km1[i,j,q] = u_k[i,j,q] + alpha*nabla_u_k
  	#Condiciones del caso 2
-
+    u_k[0,:,:] = 20.
+    u_k[-1,:,:] = 20.
+    u_k[:,0,:] = 20.
+    u_k[:,-1,:] = 20.
+    u_k[:,:,0] = 20.
 
     #CB natural
     u_km1[0,:,:] = u_km1[1,:,:]
@@ -148,8 +153,19 @@ for k in range(int32(5./dt)):
     print "Tmax = ", u_k.max()
  
     if t > next_t:
-    	grafico1.append(u_k[Nx/2,Ny/2,Nz/2])
-    	grafico2.append(t)
+    	puntomedio1.append(u_k[Nx/2,Ny/2,Nz/2])
+        puntomedio2.append(u_k[Nx/2,Ny/2,4])
+        puntomedio2.append(u_k[Nx/2,Ny/2,Nz-4)
+
+        puntocero1.append(u_k[4,4,4])
+        puntocero2.append(u_k[4,4,Nz/2])
+        puntocero3.append(u_k[4,4,Nz-4])
+
+        punto1.append(u_k[Nx/2,4,4])
+        punto2.append(u_k[Nx/2,4,Nz/2])
+        punto3.append(u_k[Nx/2,4,Nz-4])
+
+    	tiempo.append(t)
         #figure(1)
         #imshowbien(u_k)
         #title("k = {0:4.0f}   t = {1:05.2f} s".format(k, k*dt))
@@ -160,8 +176,18 @@ for k in range(int32(5./dt)):
  
 # figure(2)
 # imshowbien(u_k)
-plot(grafico2,grafico1)
-# title("k = {}   t = {} s".format(k, (k+1)*dt)) 
+plot(puntomedio1,tiempo,'b')
+plot(puntomedio2,tiempo,'g')
+plot(puntomedio3,tiempo,'r')
+plot(puntocero1,tiempo,'c')
+plot(puntocero2,tiempo,'m')
+plot(puntocero3,tiempo,'y')
+plot(punto1,tiempo,'k')
+plot(punto2,tiempo,'gray')
+plot(punto3,tiempo,'violet')
+xlabel('Tiempo (segundos)')
+ylabel('Temperatura (C°)')
+title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, (k+1)*dt)) 
 
 show()
 
