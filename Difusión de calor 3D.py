@@ -86,7 +86,7 @@ dt = 1.0       # s
 K = 79.5       # m^2 / s   
 c = 450.       # J / kg C
 rho = 7800.    # kg / m^3
-alpha = K*dt/(c*rho*dx)
+alpha = K*dt/(c*rho)
 
 # dx =  0.166666666667
 # dt = 1.0
@@ -114,7 +114,7 @@ k = 0
 # close(1)
  
 #Loop en el tiempo 
-dnext_t = 500   #  20.00
+dnext_t = 500.  #  20.00
 next_t = 0.
 framenum = 0
 
@@ -127,10 +127,11 @@ puntocero3=[]
 punto1=[]       
 punto2=[]
 punto3=[]
+tiempo=[]
 
 
 
-for k in range(segundos/dt):
+for k in range(1000):
     t = dt*(k+1)
     print "k = ", k, " t = ", t
     u_k[:,:, Nz] = TAmbiente[k][3]
@@ -166,7 +167,7 @@ for k in range(segundos/dt):
     if t > next_t:
         puntomedio1.append(u_k[Nx/2,Ny/2,Nz/2])
         puntomedio2.append(u_k[Nx/2,Ny/2,4])
-        puntomedio3.append(u_k[Nx/2,Ny/2,Nz-4)
+        puntomedio3.append(u_k[Nx/2,Ny/2,Nz-4])
 
         puntocero1.append(u_k[4,4,4])
         puntocero2.append(u_k[4,4,Nz/2])
@@ -175,7 +176,6 @@ for k in range(segundos/dt):
         punto1.append(u_k[Nx/2,4,4])
         punto2.append(u_k[Nx/2,4,Nz/2])
         punto3.append(u_k[Nx/2,4,Nz-4])
-
         tiempo.append(t)
         #figure(1)
         #imshowbien(u_k)
@@ -196,9 +196,9 @@ plot(puntocero3,tiempo,'y')
 plot(punto1,tiempo,'k')
 plot(punto2,tiempo,'gray')
 plot(punto3,tiempo,'violet')
-xlabel('Tiempo (segundos)')
-ylabel('Temperatura (C°)')
+
 title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, (k+1)*dt)) 
+
 
 show()
 
