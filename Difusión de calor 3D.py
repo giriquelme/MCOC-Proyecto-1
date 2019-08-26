@@ -9,7 +9,6 @@ def fi(K,alpha,t):
     return fii
 
 def Q(t):
-
     tau = 9.8
     b = 0.98
     au = 0.7
@@ -17,7 +16,6 @@ def Q(t):
     R = 8.31
     tr = 20
     tc = 27
-
     return 38591.46031*0.400463*(tau/t)**b*(b/t)*au*np.exp(-(tau/t)**b)*np.exp(E/R*(1/(273+tr)- 1/(273+tc)))
     
 # Funcion que nos entrega el grado de hidratacion con respecto al tiempo con un grado de hidratacion maximo de 0.7
@@ -115,9 +113,9 @@ u_k[:,:,:] = 27.
 #Parametros del problema (hierro)
 dt = 1.0       # s
 K = 78.8     # m^2 / s   
-c = 450.       # J / kg C
+#c = 450.       # J / kg C
 rho = 2400.    # kg / m^3
-alpha = K*dt/(c*rho)
+#alpha = K*dt/(c*rho)
 
 # dx =  0.166666666667
 # dt = 1.0
@@ -163,7 +161,8 @@ tiempo=[]
 
 
 for k in range(len(TAmbiente)):
-    t = TAmbiente[k][1] +1
+    t = (TAmbiente[k][1] +1)/60
+    dt = (TAmbiente[k][1] - TAmbiente[k][1])/60
     print "k = ", k, " t = ", t
     u_k[:,:, Nz] = TAmbiente[k][0]
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
@@ -171,7 +170,7 @@ for k in range(len(TAmbiente)):
         for j in range(1,Ny):
             for i in range(1,Nx):
                 #Calculamos alpha con el calor especifico respectivo al grado de hidratacion del hormigon
-                alpha = K*dt/(C(H(t), u_k[i,j,q])*rho)   
+                alpha = K*dt/(C(H(t), u_k[i,j,q])*rho*dx**2)   
                 #Algoritmo de diferencias finitas 3-D para difusion
                 #Laplaciano
                 nabla_u_k = (u_k[i+1,j,q] + u_k[i-1,j,q] +u_k[i,j+1,q]+u_k[i,j-1,q] + u_k[i,j,q+1] +u_k[i,j,q-1] - 6*u_k[i,j,q])/h**2  
@@ -197,29 +196,31 @@ for k in range(len(TAmbiente)):
     #agregar otros bored
  
     print "Tmax = ", u_k.max()
- 
-    if t > next_t:
-        puntomedio1.append(u_k[Nx/2,Ny/2,Nz/2])
-        puntomedio2.append(u_k[Nx/2,Ny/2,2])
-        puntomedio3.append(u_k[Nx/2,Ny/2,Nz-2])
+    
+    puntomedio1.append(u_k[Nx/2,Ny/2,Nz/2])
+    puntomedio2.append(u_k[Nx/2,Ny/2,2])
+    puntomedio3.append(u_k[Nx/2,Ny/2,Nz-2])
 
-        puntocero1.append(u_k[2,2,2])
-        puntocero2.append(u_k[2,2,Nz/2])
-        puntocero3.append(u_k[2,2,Nz-2])
+    puntocero1.append(u_k[2,2,2])
+    puntocero2.append(u_k[2,2,Nz/2])
+    puntocero3.append(u_k[2,2,Nz-2])
 
-        punto1.append(u_k[Nx/2,2,2])
-        punto2.append(u_k[Nx/2,2,Nz/2])
-        punto3.append(u_k[Nx/2,2,Nz-2])
-        tiempo.append(t)
+    punto1.append(u_k[Nx/2,2,2])
+    punto2.append(u_k[Nx/2,2,Nz/2])
+    punto3.append(u_k[Nx/2,2,Nz-2])
+    tiempo.append(t)
         #figure(1)
         #imshowbien(u_k)
         #title("k = {0:4.0f}   t = {1:05.2f} s".format(k, k*dt))
         #savefig("movie{0}.png".format(framenum))
         #framenum += 1
-        next_t += dnext_t
+    next_t += dnext_t
         #close(1) 
+ 
+#    if t > next_t:
+
     
-    if TAmbiente[k][1] > 30000:
+    if TAmbiente[k][1] > 3000:
         break
     
 # figure(2)
@@ -234,6 +235,6 @@ plot(tiempo,punto1,'k')
 plot(tiempo,punto2,'gray')
 plot(tiempo,punto3,'violet')
 
-title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, TAmbiente[30000][1])) 
+title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, TAmbiente[3000][1])) 
 
 show()
