@@ -7,6 +7,7 @@ import csv
 def fi(K,alpha,t):
     fii = K*(1-np.exp(-1*alpha*t))
     return fii
+
 def Q(t):
 
     tau = 9.8
@@ -19,28 +20,25 @@ def Q(t):
 
     return 38591.46031*0.400463*(tau/t)**b*(b/t)*au*np.exp(-(tau/t)**b)*np.exp(E/R*(1/(273+tr)- 1/(273+tc)))
     
+# Funcion que nos entrega el grado de hidratacion con respecto al tiempo con un grado de hidratacion maximo de 0.7
 def H(t):
     tau = 9.8
     b = 0.98
-    au = 0.7
-    
+    au = 0.7    
     return au*np.exp(-(tau/t)**b)
-    
-# H(t) es el grado de hidratacio que va en h
-    
+
+# Funcion que nos entrega el calor especifico del hormigon en funcion del grado de hidratacion y de la temperatura
 def C(h, T):   # h es el grado de hidratacion del hormigon y T es la temperatura
     Wc = 498.06
     Wa = 738.23
     Ww = 7.42
-    f = 8.4
-    g = 339
+    A = 8.4
+    B = 339
     Cc = 1140
     Ca = 770
     Cw = 4186
     densidad = 2400
-    
-    print "hola", h ,T, Wc*h(f*T+g),Wc*(1-h)*Cc,Wa*Ca + Ww*Cw
-    return (Wc*h(A*T+B) + Wc*(1-h)*Cc + Wa*Ca + Ww*Cw)/densidad
+    return (Wc*h*(A*T+B) + Wc*(1-h)*Cc + Wa*Ca + Ww*Cw)/densidad
     
 #Buena idea definir funciones que hagan el codigo expresivo
 def printbien(u):
@@ -116,7 +114,7 @@ u_k[:,:,:] = 27.
 
 #Parametros del problema (hierro)
 dt = 1.0       # s
-K = 79.5       # m^2 / s   
+K = 0.8      # m^2 / s   
 #c = 450.       # J / kg C
 rho = 2400.    # kg / m^3
 #alpha = K*dt/(c*rho)
@@ -172,7 +170,7 @@ for k in range(len(TAmbiente)):
     for q in range(1,Nz):
         for j in range(1,Ny):
             for i in range(1,Nx):
-                print C(H(t), u_k[i,j,q])
+                #Calculamos alpha con el calor especifico respectivo al grado de hidratacion del hormigon
                 alpha = K*dt/(C(H(t), u_k[i,j,q])*rho)   
                 #Algoritmo de diferencias finitas 3-D para difusion
                 #Laplaciano
@@ -221,7 +219,7 @@ for k in range(len(TAmbiente)):
         next_t += dnext_t
         #close(1) 
     
-    if TAmbiente[k][1] > 3000:
+    if TAmbiente[k][1] > 30000:
         break
     
 # figure(2)
