@@ -114,7 +114,7 @@ u_k[:,:,:] = 27.
 
 #Parametros del problema (hierro)
 dt = 1.0       # s
-K = 0.8      # m^2 / s   
+K = 78.8     # m^2 / s   
 c = 450.       # J / kg C
 rho = 2400.    # kg / m^3
 alpha = K*dt/(c*rho)
@@ -132,9 +132,9 @@ alpha_bueno = 0.0001
 print "dt = ", dt
 print "dx = ", dx
 print "K = ", K
-print "c = ", c
+#print "c = ", c
 print "rho = ", rho
-print "alpha = ", alpha
+#print "alpha = ", alpha
  
 k = 0
  
@@ -145,7 +145,7 @@ k = 0
 # close(1)
  
 #Loop en el tiempo 
-dnext_t = 500.  #  20.00
+dnext_t = 20.  #  20.00
 next_t = 0.
 framenum = 0
 
@@ -171,7 +171,7 @@ for k in range(len(TAmbiente)):
         for j in range(1,Ny):
             for i in range(1,Nx):
                 #Calculamos alpha con el calor especifico respectivo al grado de hidratacion del hormigon
-#                alpha = K*dt/(C(H(t), u_k[i,j,q])*rho)   
+                alpha = K*dt/(C(H(t), u_k[i,j,q])*rho)   
                 #Algoritmo de diferencias finitas 3-D para difusion
                 #Laplaciano
                 nabla_u_k = (u_k[i+1,j,q] + u_k[i-1,j,q] +u_k[i,j+1,q]+u_k[i,j-1,q] + u_k[i,j,q+1] +u_k[i,j,q-1] - 6*u_k[i,j,q])/h**2  
@@ -234,6 +234,6 @@ plot(tiempo,punto1,'k')
 plot(tiempo,punto2,'gray')
 plot(tiempo,punto3,'violet')
 
-title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, (k+1)*dt)) 
+title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, TAmbiente[30000][1])) 
 
 show()
