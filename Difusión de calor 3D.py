@@ -11,13 +11,37 @@ def Q(t):
 
     tau = 9.8
     b = 0.98
-    au = 0.8
+    au = 0.7
     E = 27.1
     R = 8.31
     tr = 20
     tc = 27
 
     return 38591.46031*0.400463*(tau/t)**b*(b/t)*au*np.exp(-(tau/t)**b)*np.exp(E/R*(1/(273+tr)- 1/(273+tc)))
+    
+def H(t):
+    tau = 9.8
+    b = 0.98
+    au = 0.7
+    
+    return au*np.exp(-(tau/t)**b)
+    
+# H(t) es el grado de hidratacio que va en h
+    
+def C(h, T):   # h es el grado de hidratacion del hormigon y T es la temperatura
+    Wc = 498.06
+    Wa = 738.23
+    Ww = 7.42
+    f = 8.4
+    g = 339
+    Cc = 1140
+    Ca = 770
+    Cw = 4186
+    densidad = 2400
+    
+    print "hola", h ,T, Wc*h(f*T+g),Wc*(1-h)*Cc,Wa*Ca + Ww*Cw
+    return (Wc*h(A*T+B) + Wc*(1-h)*Cc + Wa*Ca + Ww*Cw)/densidad
+    
 #Buena idea definir funciones que hagan el codigo expresivo
 def printbien(u):
     print u.T[Nx::-1,:,:]
@@ -93,9 +117,9 @@ u_k[:,:,:] = 27.
 #Parametros del problema (hierro)
 dt = 1.0       # s
 K = 79.5       # m^2 / s   
-c = 450.       # J / kg C
-rho = 7800.    # kg / m^3
-alpha = K*dt/(c*rho)
+#c = 450.       # J / kg C
+rho = 2400.    # kg / m^3
+#alpha = K*dt/(c*rho)
 
 # dx =  0.166666666667
 # dt = 1.0
@@ -103,16 +127,16 @@ alpha = K*dt/(c*rho)
  
 alpha_bueno = 0.0001
 #dt = alpha_bueno*(c*rho*dx**2)/K
-alpha = K*dt/(c*rho)
+#alpha = K*dt/(c*rho)
  
  
 #Informar cosas interesantes
 print "dt = ", dt
 print "dx = ", dx
 print "K = ", K
-print "c = ", c
+#print "c = ", c
 print "rho = ", rho
-print "alpha = ", alpha
+#print "alpha = ", alpha
  
 k = 0
  
@@ -148,11 +172,14 @@ for k in range(len(TAmbiente)):
     for q in range(1,Nz):
         for j in range(1,Ny):
             for i in range(1,Nx):
+                print C(H(t), u_k[i,j,q])
+                alpha = K*dt/(C(H(t), u_k[i,j,q])*rho)   
                 #Algoritmo de diferencias finitas 3-D para difusion
                 #Laplaciano
                 nabla_u_k = (u_k[i+1,j,q] + u_k[i-1,j,q] +u_k[i,j+1,q]+u_k[i,j-1,q] + u_k[i,j,q+1] +u_k[i,j,q-1] - 6*u_k[i,j,q])/h**2  
                 #Forward euler..
                 u_km1[i,j,q] = u_k[i,j,q] + alpha*nabla_u_k + Q(t)
+                
     #Condiciones del caso 2
     #u_k[0,:,:] = 20.
     #u_k[-1,:,:] = 20.
@@ -193,6 +220,10 @@ for k in range(len(TAmbiente)):
         #framenum += 1
         next_t += dnext_t
         #close(1) 
+    
+    if TAmbiente[k][1] > 3000:
+        break
+    
 # figure(2)
 # imshowbien(u_k)
 plot(tiempo,puntomedio1,'b')
