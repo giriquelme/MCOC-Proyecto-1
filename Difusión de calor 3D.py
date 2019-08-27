@@ -8,15 +8,15 @@ def fi(K,alpha,t):
     fii = K*(1-np.exp(-1*alpha*t))
     return fii
 
-def Q(t):
+def Q(t):     #Kg/m^3
     tau = 9.8
     b = 0.98
     au = 0.7
     E = 27.1
-    R = 8.31
-    tr = 20
-    tc = 27
-    return 38591.46031*0.400463*(tau/t)**b*(b/t)*au*np.exp(-(tau/t)**b)*np.exp(E/R*(1/(273+tr)- 1/(273+tc)))
+    R = 8.31   # J/(K*mol)
+    tr = 20    # °C
+    tc = 20    # °C
+    return 38591.46031*0.600463*(tau/t)**b*(b/t)*au*np.exp(-(tau/t)**b)*np.exp(E/R*(1/(273+tr)- 1/(273+tc)))
     
 # Funcion que nos entrega el grado de hidratacion con respecto al tiempo con un grado de hidratacion maximo de 0.7
 def H(t):
@@ -27,15 +27,16 @@ def H(t):
 
 # Funcion que nos entrega el calor especifico del hormigon en funcion del grado de hidratacion y de la temperatura
 def C(h, T):   # h es el grado de hidratacion del hormigon y T es la temperatura
-    Wc = 498.06
-    Wa = 738.23
-    Ww = 7.42
+    v = 0.62
+    Wc = 498.06 / v  #Kg/m^3
+    Wa = 738.23 / v  #Kg/m^3
+    Ww = 7.42 / v    #Kg/m^3
     A = 8.4
     B = 339
-    Cc = 1140
-    Ca = 770
-    Cw = 4186
-    densidad = 2400
+    Cc = 1140    #J/(kg*°C)
+    Ca = 770     #J/(kg*°C)
+    Cw = 4186    #J/(kg*°C)
+    densidad = 2400   #Kg/m^3
     return (Wc*h*(A*T+B) + Wc*(1-h)*Cc + Wa*Ca + Ww*Cw)/densidad
     
 #Buena idea definir funciones que hagan el codigo expresivo
@@ -112,7 +113,7 @@ u_k[:,:,:] = 27.
 
 #Parametros del problema (hierro)
 dt = 1.0       # s
-K = 78.8     # m^2 / s   
+K = 0.8     # m^2 / s
 #c = 450.       # J / kg C
 rho = 2400.    # kg / m^3
 #alpha = K*dt/(c*rho)
@@ -147,22 +148,24 @@ dnext_t = 20.  #  20.00
 next_t = 0.
 framenum = 0
 
-puntomedio1=[]
-puntomedio2=[]
-puntomedio3=[]
-puntocero1=[]
-puntocero2=[]
-puntocero3=[]
-punto1=[]       
-punto2=[]
-punto3=[]
-tiempo=[]
+puntomedio1=[27]
+puntomedio2=[27]
+puntomedio3=[27]
+puntocero1=[27]
+puntocero2=[27]
+puntocero3=[27]
+punto1=[27]       
+punto2=[27]
+punto3=[27]
+tiempo=[0]
 
-
-
-for k in range(len(TAmbiente)):
-    t = (TAmbiente[k][1] +1)/60
-    dt = (TAmbiente[k][1] - TAmbiente[k][1])/60
+t = 0.0
+print "k = 0.0", " t = 0.0"
+print "Tmax = ", u_k.max()
+for k in range(1,len(TAmbiente)):
+    
+    t = TAmbiente[k][1]
+    dt = (TAmbiente[k][1]-TAmbiente[k-1][1])
     print "k = ", k, " t = ", t
     u_k[:,:, Nz] = TAmbiente[k][0]
     #Loop en el espacio   i = 1 ... n-1   u_km1[0] = 0  u_km1[n] = 20
@@ -170,7 +173,7 @@ for k in range(len(TAmbiente)):
         for j in range(1,Ny):
             for i in range(1,Nx):
                 #Calculamos alpha con el calor especifico respectivo al grado de hidratacion del hormigon
-                alpha = K*dt/(C(H(t), u_k[i,j,q])*rho*dx**2)   
+                alpha = K*dt/(C(H(t), u_k[i,j,q])*rho)   
                 #Algoritmo de diferencias finitas 3-D para difusion
                 #Laplaciano
                 nabla_u_k = (u_k[i+1,j,q] + u_k[i-1,j,q] +u_k[i,j+1,q]+u_k[i,j-1,q] + u_k[i,j,q+1] +u_k[i,j,q-1] - 6*u_k[i,j,q])/h**2  
@@ -220,7 +223,7 @@ for k in range(len(TAmbiente)):
 #    if t > next_t:
 
     
-    if TAmbiente[k][1] > 3000:
+    if TAmbiente[k][1] > 100000:
         break
     
 # figure(2)
@@ -235,6 +238,6 @@ plot(tiempo,punto1,'k')
 plot(tiempo,punto2,'gray')
 plot(tiempo,punto3,'violet')
 
-title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, TAmbiente[3000][1])) 
+title("HORMIGONES MASIVOS k = {}   t = {} s".format(k, t)) 
 
 show()
